@@ -1,13 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root { 
-  --background-color: #151617;
+:root {
+  --background-image:linear-gradient(45deg, hsla(330, 2%, 18%, 1) 0%, hsla(0, 0%, 0%, 1) 100%);
+
+
+
   --font-title: 'Orbitron', sans-serif;
   --font-body: 'Share Tech Mono', monospace;
 }
 
-body { 
-  background-color: var(--background-color);
+html,
+body {
+  height: 100%; /* Make body take full viewport height */
+  margin: 0; /* Remove default margins */
+  padding: 0; /* Remove default padding */
+  background: var(--background-image);
   font-family: var(--font-body);
 }
