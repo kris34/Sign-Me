@@ -1,3 +1,4 @@
+from app.utils import hash_password, check_password
 from flask import Blueprint, request, jsonify
 from app.models import User
 from app import db
@@ -20,7 +21,7 @@ def register():
 
     db.session.add(new_user)
     db.session.commit()
-    
+
     import os
     print("DB path:", os.path.abspath("mydatabase.db"))
     print("All users:", User.query.all())
