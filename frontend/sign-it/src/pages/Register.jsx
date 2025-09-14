@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import api from '../api/api';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 export default function Register() {
-    const [error, setError] = useState('');
+    const dispatch = useDispatch();
+
+    const [error, setError] = useState(null);
 
     const [formData, setFormData] = useState({
         email: "",
@@ -12,7 +16,6 @@ export default function Register() {
         repeat_password: ''
     });
 
-    // Update form data when input changes
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -20,18 +23,47 @@ export default function Register() {
         });
     };
 
+    const navigate = useNavigate();
+
     const register = async (e) => {
-        e.preventDefault();
         try {
-            const res = await api.post('/api/users/register', {
+            e.preventDefault();
+
+            const isFieldEmpty = Object.values(formData).some(field => !field);
+
+            if (isFieldEmpty) {
+                setError("Some fields are empty!");
+                return;
+            };
+
+            if (formData?.password !== formData?.repeat_password) {
+                setError('Passwords do not match!');
+                return;
+            };
+
+            if (formData?.password?.length < 10) {
+                setError('Password must be at least 10 charakters long!');
+                return;
+            };
+
+            const response = await api.post('/api/users/register', {
                 email: formData.email,
                 firstName: formData.firstName,
-                lastName: formData.lastName
-            });
-            console.log("User registered:", res.data);
+                lastName: formData.lastName,
+                password: formData.password,
+                repeatPassword: formData.repeat_password
+            }, { withCredentials: true });
+
+            if (response?.status !== 200) {
+                setError('An error occured while registering!');
+                return;
+            };
+
+            navigate('/');
+            setError(null);
         } catch (err) {
             console.log(err);
-        }
+        };
     };
 
     return (
@@ -95,12 +127,17 @@ export default function Register() {
                         required
                     />
                 </div>
-
-
                 <button type="submit" className="font-bold active:scale-95 cursor-pointer bg-none">
                     🚀 Register
                 </button>
+
+                <div className='text-red-500 text-center'>
+                    <p>
+                        {error && error}
+                    </p>
+                </div>
+
             </form>
         </div>
     );
-}
+};

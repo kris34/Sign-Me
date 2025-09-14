@@ -12,10 +12,17 @@ function Header({ }) {
                         Sign me!
                     </h2>
                 </div>
-                <div onClick={() => navigate('/register')} className='flex flex-col gap-5 cursor-pointer select-none hover:bg-gray-500 p-2 rounded active:scale-95'>
-                    <p>
-                        Sign up!
-                    </p>
+                <div className='flex gap-5'>
+                    <div onClick={() => navigate('/register')} className='flex flex-col gap-5 cursor-pointer select-none hover:bg-gray-500 p-2 rounded active:scale-95'>
+                        <p>
+                            Sign up
+                        </p>
+                    </div>
+                    <div onClick={() => navigate('/login')} className='flex flex-col gap-5 cursor-pointer select-none hover:bg-gray-500 p-2 rounded active:scale-95'>
+                        <p>
+                            Log in
+                        </p>
+                    </div>
                 </div>
             </nav>
         </header>

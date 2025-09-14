@@ -1,4 +1,5 @@
 from . import bcrypt
+from app import db
 
 
 def hash_password(password: str) -> str:
@@ -15,5 +16,5 @@ def check_password(hash: str, password: str) -> bool:
         print('Invalid password in check_password!')
         return ''
 
-    checked = bcrypt.check_password_hash(password)
+    checked = bcrypt.check_password_hash(hash, password)
     return checked
