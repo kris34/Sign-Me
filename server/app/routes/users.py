@@ -56,6 +56,8 @@ def login():
 
     foundUser = get_user(email)
 
+    first_name = foundUser.first_name
+
     if not foundUser:
         return jsonify('User not found!'), 400
 
@@ -65,4 +67,20 @@ def login():
     if not unhashed_password:
         return jsonify("Invalid password while attempting to log in!"), 405
 
-    return jsonify({"message": "User logged in successfully!", "data": data}), 201
+    session['email'] = email
+    session['first_name'] = first_name
+
+    return jsonify({"message": "User logged in successfully!", "data": email}), 201
+
+
+@users_bp.route('/me', methods=['GET'])
+def get_session():
+    email = session.get("email")
+    first_name = session.get('first_name')
+
+    valid_user = get_user(email)
+
+    if not valid_user:
+        return jsonify({"message": "Invalid user in get session"}), 405
+
+    return jsonify({"message": "Session found", "data": {"email": email, "first_name": first_name}}), 200
