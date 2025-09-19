@@ -23,13 +23,13 @@ def register():
         return jsonify({"error": "User already exists!"}), 405
 
     if password != repeat_password:
-        return jsonify({"error": "Passwords do not match!"}), 400
+        return jsonify({"error": "Passwords do not match!"}), 405
 
     if len(password) < 12:
         return jsonify({"error": "Password is too short!"}), 405
 
     if not email or not first_name or not last_name:
-        return jsonify({"error": "Invalid email or username"}), 400
+        return jsonify({"error": "Invalid email or username"}), 405
 
     hash = hash_password(password)
 
@@ -40,8 +40,9 @@ def register():
     db.session.commit()
 
     session['email'] = email
+    session['first_name'] = first_name
 
-    return jsonify({"message": "User registered successfully", "data": data}), 201
+    return jsonify({"message": "User registered successfully", "data": data}), 200
 
 
 @users_bp.route('/login', methods=["POST"])
@@ -56,13 +57,12 @@ def login():
 
     foundUser = get_user(email)
 
-    first_name = foundUser.first_name
-
     if not foundUser:
-        return jsonify('User not found!'), 400
+        return jsonify('User not found!'), 405
 
     hash = foundUser.password
     unhashed_password = check_password(hash, password)
+    first_name = foundUser.first_name
 
     if not unhashed_password:
         return jsonify("Invalid password while attempting to log in!"), 405
@@ -70,7 +70,7 @@ def login():
     session['email'] = email
     session['first_name'] = first_name
 
-    return jsonify({"message": "User logged in successfully!", "data": email}), 201
+    return jsonify({"email": email, "firstName": first_name}), 200
 
 
 @users_bp.route('/me', methods=['GET'])
@@ -84,3 +84,16 @@ def get_session():
         return jsonify({"message": "Invalid user in get session"}), 405
 
     return jsonify({"message": "Session found", "data": {"email": email, "first_name": first_name}}), 200
+
+
+@users_bp.route('/logout', methods=['POST'])
+def logout():
+    email = session.get('email');
+    
+    valid_user = get_user(email);
+    
+    if not valid_user:
+        return jsonify({'message': 'Invalid user in logout!'}), 405
+    
+    session.clear();
+    return jsonify({"message": 'User logout succesfull!'}), 200

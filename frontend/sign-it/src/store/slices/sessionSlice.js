@@ -10,8 +10,6 @@ const sessionSlice = createSlice({
   initialState,
   reducers: {
     setFirstName: (state, action) => {
-        console.log(action.payload);
-        
       state.firstName = action.payload;
     },
     setEmail: (state, action) => {
